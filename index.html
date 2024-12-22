@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat em Tempo Real</title>
+    <style>
+        #chat {
+            border: 1px solid #ccc;
+            padding: 10px;
+            max-width: 500px;
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        .message {
+            margin-bottom: 5px;
+        }
+        .username {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .text {
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chat em Tempo Real</h1>
+    <div id="chat"></div>
+    <input type="text" id="username" placeholder="Seu nome">
+    <input type="text" id="message" placeholder="Sua mensagem">
+    <button onclick="sendMessage()">Enviar</button>
+
+    <script>
+        const ws = new WebSocket("ws://localhost:8081/ws");
+
+        const userColors = {};
+
+        function getColorForUser(username) {
+
+            if (userColors[username]) {
+                return userColors[username];
+            }
+
+            const randomColor = `hsl(${Math.floor(Math.random() * 360)}, 70%, 70%)`;
+            userColors[username] = randomColor;
+            return randomColor;
+        }
+
+        ws.onmessage = (event) => {
+            const messages = document.getElementById("chat");
+            const data = JSON.parse(event.data); 
+
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add("message");
+
+            const usernameSpan = document.createElement("span");
+            usernameSpan.classList.add("username");
+            usernameSpan.textContent = data.username + ":";
+            usernameSpan.style.color = getColorForUser(data.username); 
+
+            const textSpan = document.createElement("span");
+            textSpan.classList.add("text");
+            textSpan.textContent = data.message;
+
+            messageDiv.appendChild(usernameSpan);
+            messageDiv.appendChild(textSpan);
+
+            messages.appendChild(messageDiv);
+            messages.scrollTop = messages.scrollHeight; 
+        };
+
+        function sendMessage() {
+            const username = document.getElementById("username").value.trim();
+            const message = document.getElementById("message").value.trim();
+
+            if (username && message) {
+                ws.send(JSON.stringify({ username, message }));
+                document.getElementById("message").value = ""; 
+            } else {
+                alert("Preencha seu nome e a mensagem!");
+            }
+        }
+    </script>
+</body>
+</html>
