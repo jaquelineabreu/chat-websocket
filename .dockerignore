@@ -1,0 +1,7 @@
+# Ignorar arquivos gerados
+/build
+# Ignorar arquivos de cache
+*.log
+*.tmp
+# Ignorar diretórios ocultos
+.git
