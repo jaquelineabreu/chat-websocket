@@ -18,7 +18,6 @@ Este é um projeto de um **chat em tempo real** desenvolvido em **Golang** utili
 ### **1. Requisitos**
 Certifique-se de que você possui as seguintes ferramentas instaladas:
 - **[Docker](https://www.docker.com/)**
-- **[Docker Compose](https://docs.docker.com/compose/)** (opcional)
 
 ---
 
